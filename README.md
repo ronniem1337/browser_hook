@@ -58,25 +58,25 @@ Once a browser connects, commands entered into the Python terminal can be sent d
 ```text
 ╭──────────────────────────────────────────────────────────────╮
 │                                                              │
-│  $ python3 main.py                                           │
+│  $ python3 bhook.py                                           │
 │                                                              │
-│  Hosting IP: 127.0.0.1                                      │
-│  Port: 8765                                                   │
+│  Hosting IP: 127.0.0.1                                       │
+│  Port: 8765                                                  │
 │                                                              │
-│  Browser hook hosting IP: 127.0.0.1                         │
-│  Port: 8080                                                   │
+│  Browser hook hosting IP: 127.0.0.1                          │
+│  Port: 8080                                                  │
 │                                                              │
-│  Browserhook full websocket call back address:              │
+│  Browserhook full websocket call back address:               │
 │  ws://127.0.0.1:8765                                         │
 │                                                              │
-│  Hosting server at: 127.0.0.1:8765.                         │
+│  Hosting server at: 127.0.0.1:8765.                          │
 │                                                              │
-│  Browser can have false positives and vice versa.           │
+│  Browser can have false positives and vice versa.            │
 │  Type "help" to load help menu                               │
 │                                                              │
 │  CLIENTS: 1                                                  │
 │                                                              │
-│  javascript> document.body.style.background = "black"       │
+│  javascript> document.body.style.background = "black"        │
 │  javascript> alert("Hello from BrowserHook!")                │
 │                                                              │
 ╰──────────────────────────────────────────────────────────────╯
