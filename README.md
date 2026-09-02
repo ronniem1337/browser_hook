@@ -172,29 +172,6 @@ Then configure the browser client with the resulting WebSocket callback address.
 
 For local development, keeping the server bound to 127.0.0.1 is strongly recommended.
 
-🔌 Connection Architecture
-                     ┌─────────────────┐
-                     │   Python CLI    │
-                     │                 │
-                     │  javascript>    │
-                     └────────┬────────┘
-                              │
-                              │ WebSocket
-                              ▼
-                    ┌────────────────────┐
-                    │  BrowserHook       │
-                    │  WebSocket Server  │
-                    └─────────┬──────────┘
-                              │
-                    ┌─────────┴─────────┐
-                    │                   │
-                    ▼                   ▼
-             ┌─────────────┐     ┌─────────────┐
-             │  Browser 1  │     │  Browser 2  │
-             │             │     │             │
-             │  JavaScript │     │  JavaScript │
-             └─────────────┘     └─────────────┘
-
 
 Multiple connected clients are maintained through the CLIENTS collection, allowing commands to be broadcast to connected browsers.
 
