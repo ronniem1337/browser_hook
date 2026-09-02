@@ -23,12 +23,12 @@ async function connect() {
 
         try {
             eval(data);
-            ws.send("Browser: Javascript ran");
+            console.log("ran")
         } catch (error) {
           if (data == ""){
             ws.send("")
           } else {
-              ws.send("Browser: error running: "+data);
+            console.log("error")
           }
         }
     };
