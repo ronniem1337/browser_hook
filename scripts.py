@@ -3,7 +3,7 @@ scripts = {
         "play_mp3":lambda: f"javascript:(function(){{var audio=new Audio('{input('mp3 url:')}');audio.play();var imgs=document.getElementsByTagName('img');for(var i=0;i<imgs.length;i++){{imgs[i].src='https://i.kym-cdn.com/entries/icons/original/000/043/027/metalpipefalling.jpg';}}}})();",
     "alert":lambda: f"alert('{input('message: ')}')",
     "background_image":lambda: f"document.body.style.backgroundImage = \"url('{input('body background image url: ')}')\";",
-    "add_script":lambda: f"document.body.appendChild(Object.assign(document.createElement('script'),{{src:'{input('script link: ')}'}}));",
+    "add_script_tag":lambda: f"document.body.appendChild(Object.assign(document.createElement('script'),{{src:'{input('script link: ')}'}}));",
     "3d_webpage": lambda: "document.body.appendChild(Object.assign(document.createElement('script'),{src:'https://cdn.jsdelivr.net/gh/DevBubba/Bookmarklets@main/Screen/3Dwebpage.js'}));",
     "among_us": lambda: "document.body.appendChild(Object.assign(document.createElement('script'),{src:'https://cdn.jsdelivr.net/gh/DevBubba/Bookmarklets@main/Screen/AmongUs.js'}));",
     "asteroids": lambda: "document.body.appendChild(Object.assign(document.createElement('script'),{src:'https://cdn.jsdelivr.net/gh/DevBubba/Bookmarklets@main/Screen/Astoids.js'}));",
