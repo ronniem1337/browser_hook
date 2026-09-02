@@ -22,22 +22,6 @@ The project combines:
 
 Once a browser connects, commands entered into the Python terminal can be sent directly to the browser and executed as JavaScript.
 
-┌──────────────────────┐
-│      Python CLI      │
-│                      │
-│  javascript> alert() │
-└──────────┬───────────┘
-           │
-           │ WebSocket
-           ▼
-┌──────────────────────┐
-│    BrowserHook Page  │
-│                      │
-│      WebSocket       │
-│          ↓           │
-│        eval()        │
-└──────────────────────┘
-
 🎬 Demo Flow
 $ python3 main.py
 
@@ -87,20 +71,6 @@ Waits for incoming messages.
 Executes received JavaScript.
 Sends the result/status back to the server.
 Automatically attempts to reconnect if disconnected.
-📁 Project Structure
-BrowserHook/
-│
-├── main.py
-│
-├── scripts/
-│   ├── __init__.py
-│   └── ...
-│
-└── page/
-    ├── index.html
-    ├── websocket_config.json
-    ├── dragon-studio-gentle-rain-01-437313.mp3
-    └── aurectheme-jazz-lofi-587555.mp3
 
 ⚙️ Installation
 
