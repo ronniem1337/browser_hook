@@ -23,12 +23,11 @@ async function connect() {
 
         try {
             eval(data);
-            console.log("ran")
         } catch (error) {
           if (data == ""){
             ws.send("")
           } else {
-            console.log("error")
+            console.log("")
           }
         }
     };
