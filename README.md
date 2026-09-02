@@ -1,8 +1,9 @@
+<div align="center">
 🛰️ BrowserHook
 
 A lightweight Python WebSocket controller for executing JavaScript in a connected browser.
 
-<div align="center">
+
 
 Python • WebSockets • JavaScript • AsyncIO • Browser Automation
 
