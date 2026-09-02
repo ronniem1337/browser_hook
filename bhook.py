@@ -40,13 +40,12 @@ async def conncted():
             last_count = current_count
         await asyncio.sleep(0.1)
 
-async def broadcast():
-
+async def broadcast(timeout):
     asyncio.create_task(conncted())
     while True:
         for client in CLIENTS:
             try:
-                m = await asyncio.wait_for(client.recv(), timeout=1)
+                m = await asyncio.wait_for(client.recv(), timeout=int(timeout))
                 print("Received:", m)
             except websockets.exceptions.ConnectionClosed:
                 pass
@@ -108,13 +107,13 @@ async def handler(websocket):
     finally:
         CLIENTS.remove(websocket)
 
-async def main(ip, port):
+async def main(ip, port, timeout):
     print(f"Hosting server at: {ip}:{port}.\n")
     print("Browser can have false positives and false netgatives.")
     print("Type \"help\" to load help menu \n")
 
     async with serve(handler, ip, port):
-        await broadcast()
+        await broadcast(timeout)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
             prog='Bhook',
@@ -126,6 +125,7 @@ if __name__ == '__main__':
     parser.add_argument('-ws','--web_ip', default="127.0.0.1", help="website IP to host at.")
     parser.add_argument('-wp','--web_port', type=int, default=8000, help="Website port.")
     parser.add_argument('-cb', '--callback', default="ws://127.0.0.1:9000", help="Browser hook call back adress. EX: ws://<Server IP>:<Server port>")
+    parser.add_argument('-t', '--timeout', type=int, default=2, help="Time to wait for request form browsers.")
     args = parser.parse_args()
 
     ip = args.server_ip
@@ -133,6 +133,7 @@ if __name__ == '__main__':
     web_ip = args.web_ip
     web_port = args.web_port
     cal_bck_addr = args.callback
+    timeout = args.timeout
 
     if (cal_bck_addr[0:3] == "ws:"):
         pass
@@ -151,4 +152,4 @@ if __name__ == '__main__':
 
     threading.Thread(target=start_web_server, args=(web_ip,int(web_port)),daemon=True).start()
     time.sleep(3)
-    asyncio.run(main(ip,int(port)))
+    asyncio.run(main(ip,int(port),timeout))
