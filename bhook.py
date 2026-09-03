@@ -38,20 +38,30 @@ async def conncted():
         if current_count != last_count:
             print_formatted_text(f"CLIENTS: {len(CLIENTS)}")
             last_count = current_count
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.5)
 
+async def msg(timeout):
+    while True:
+        try:
+            for client in CLIENTS:
+                m = await asyncio.wait_for(client.recv(), timeout=int(timeout))
+
+                print_formatted_text(f"Received: {m}")
+
+        except websockets.exceptions.ConnectionClosed:
+            pass
+        except websockets.exceptions.ConcurrencyError:
+            pass
+        except asyncio.TimeoutError:
+            m = None
+        finally:
+            CLIENTS.discard(CLIENTS)
+        await asyncio.sleep(0.5) 
 async def broadcast(timeout):
     asyncio.create_task(conncted())
-    while True:
-        for client in CLIENTS:
-            try:
-                m = await asyncio.wait_for(client.recv(), timeout=int(timeout))
-                print("Received:", m)
-            except websockets.exceptions.ConnectionClosed:
-                pass
-            except asyncio.TimeoutError:
-                m = None
+    asyncio.create_task(msg(timeout))
 
+    while True:
         cmd = await session.prompt_async("javascript > ")
         if cmd == "help":
             print("\nhelp, loads this page.")
@@ -60,7 +70,7 @@ async def broadcast(timeout):
             print("modules, list all mudules avaiable.")
             print("clear, clears screen")
             print("quit/exit, exits program.\n")
-            print("!!! using anything that requires user input will make the program freeze unless added as script  EX: alert()!!!\n")
+            print("!!! using anything that requires user input will stop all incoming commands, it will then continue in order once inputted !!!\n")
 
         if cmd == "clear":
             os.system("clear")
